@@ -7,6 +7,7 @@ This extension generates get and set methods from class variable declarations.
     - [Simply call the Extension with `CTRL + ALT + D`](#simply-call-the-extension-with-ctrl--alt--d)
   - [Planned features](#planned-features)
   - [Release Notes](#release-notes)
+    - [1.3.2](#132)
     - [1.3.0](#130)
     - [1.2.0](#120)
     - [1.1.0](#110)
@@ -48,6 +49,10 @@ or just use the Command Palette and search for `Generate Getter/Setter`
 
 ## Release Notes
 
+### 1.3.2
+* Use property decorators for Python 
+* Use private variables for Python (remove the "__" if you want public variables)
+      
 ### 1.3.0
 
 * Added JavaScript Support

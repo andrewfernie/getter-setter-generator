@@ -38,12 +38,12 @@ indentSize}
     },
     python: {
         getter: 
-`\nindentSizedef get_variableName(self):
-indentSize\treturn self.variableName
+`\nindentSize@property\nindentSizedef variableName(self):
+indentSize\treturn self.__variableName
 indentSize`,
         setter: 
-`\nindentSizedef set_variableName(self, variableName) :
-indentSize\tself.variableName = variableName
+`\nindentSize@variableName.setter\nindentSizedef variableName(self, val) :
+indentSize\tself.__variableName = val
 `
     },
     cpp: {

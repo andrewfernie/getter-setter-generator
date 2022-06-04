@@ -38,8 +38,8 @@ function activate(context) {
 			let text = editor.document.getText(editor.selection);
 			let generatedCode;
 
-			if (language === 'java' || language === 'php' || language === 'python' || language === 'cpp' || language === 'javascript' || language === 'typescript' ) {
-				generatedCode = generateGetterSetterAutomatically(text, "both", language);			
+			if (language === 'java' || language === 'php' || language === 'python' || language === 'cpp' || language === 'javascript' || language === 'typescript') {
+				generatedCode = generateGetterSetterAutomatically(text, "both", language);
 			} else {
 				vscode.window.showInformationMessage('Language currently unsupported, please submit an Issue for this package!')
 			}
@@ -79,8 +79,8 @@ function activate(context) {
 			let text = editor.document.getText(editor.selection);
 			let generatedCode;
 
-			if (language === 'java' || language === 'php' || language === 'python' || language === 'cpp' || language === 'javascript' || language === 'typescript' ) {
-				generatedCode = generateGetterSetterAutomatically(text, "getter", language);			
+			if (language === 'java' || language === 'php' || language === 'python' || language === 'cpp' || language === 'javascript' || language === 'typescript') {
+				generatedCode = generateGetterSetterAutomatically(text, "getter", language);
 			} else {
 				vscode.window.showInformationMessage('Language currently unsupported, please submit an Issue for this package!')
 			}
@@ -120,8 +120,8 @@ function activate(context) {
 			let text = editor.document.getText(editor.selection);
 			let generatedCode;
 
-			if (language === 'java' || language === 'php' || language === 'python' || language === 'cpp' || language === 'javascript' || language === 'typescript' ) {
-				generatedCode = generateGetterSetterAutomatically(text, "setter", language);			
+			if (language === 'java' || language === 'php' || language === 'python' || language === 'cpp' || language === 'javascript' || language === 'typescript') {
+				generatedCode = generateGetterSetterAutomatically(text, "setter", language);
 			} else {
 				vscode.window.showInformationMessage('Language currently unsupported, please submit an Issue for this package!')
 			}
@@ -153,13 +153,13 @@ exports.activate = activate;
  * @typedef {"both" | "getter" | "setter"} returnableType 
  */
 
-function generateGetterSetterAutomatically(text, returnableType, language){
+function generateGetterSetterAutomatically(text, returnableType, language) {
 	let selectedTextArray = text.split('\r\n').filter(e => e); //removes empty array values (line breaks)
 	let generatedCode = '';
 
 	for (const text of selectedTextArray) {
 
-		if(text.startsWith('@') && language === 'java'){
+		if (text.startsWith('@') && language === 'java') {
 			continue;
 		}
 
@@ -168,10 +168,12 @@ function generateGetterSetterAutomatically(text, returnableType, language){
 		selectedText = text.replace(';', '').trim(); //removes all semicolons 
 		indentSize = text.split(selectedText.charAt(0))[0]; //get the indent size for proper formatting
 
+		variableName = '';
+		variableType = '';
 
 		if (language === 'java') {
 			let hasModifier = selectedText.split(' ').length == 3;
-	
+
 			if (hasModifier) {
 				variableType = selectedText.split(' ')[1];
 				variableName = selectedText.split(' ')[2];
@@ -179,65 +181,65 @@ function generateGetterSetterAutomatically(text, returnableType, language){
 				variableType = selectedText.split(' ')[0];
 				variableName = selectedText.split(' ')[1];
 			}
-		} else if (language === 'php'){
+		} else if (language === 'php') {
 			let isConstructorVariable = selectedText.includes('$this->');
-	
+
 			if (isConstructorVariable) {
 				variableName = selectedText.split('>')[1].split(' ')[0];
 			} else {
 				variableName = selectedText.split('$')[1];
 			}
-		} else if (language === 'python'){
+		} else if (language === 'python') {
 			let isConstructorVariable = selectedText.includes('self.');
-	
+
 			if (isConstructorVariable) {
 				variableName = selectedText.split('.')[1].split(' ')[0];
 			} else {
 				variableName = selectedText.split('=')[0].trim();
 			}
-		} else if (language === 'cpp'){
+		} else if (language === 'cpp') {
 			variableType = selectedText.split(' ')[0];
-			variableName = selectedText.split(' ')[1];	
-		} else if (language === 'javascript' || language === 'typescript'){
+			variableName = selectedText.split(' ')[1];
+		} else if (language === 'javascript' || language === 'typescript') {
 			let isConstructorVariable = selectedText.includes('.');
-	
+
 			if (isConstructorVariable) {
 				variableName = selectedText.split('.')[1].split(' ')[0];
 			} else {
 				variableName = selectedText.split(':')[0];
-			}		
+			}
 		}
-		
+
 		if (variableName === null || variableName === undefined) {
 			vscode.window.showErrorMessage('Faulty Selection. Please make sure you select a variable.')
-			return; 
+			return;
 		}
 
 		variableName.trim();
 		variableType.trim();
-		
+
 		let code = '';
 		let langObject = lang[language];
 		let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
 
 		if (returnableType === "both") {
 			let getterPlain = langObject.getter
-			let setterPlain = langObject.setter				
-		
+			let setterPlain = langObject.setter
+
 			let getter = getterPlain.replace(/indentSize/g, indentSize).replace(/variableType/g, variableType).replace(/variableNameUp/g, variableNameUp).replace(/variableName/g, variableName);
 			let setter = setterPlain.replace(/indentSize/g, indentSize).replace(/variableType/g, variableType).replace(/variableNameUp/g, variableNameUp).replace(/variableName/g, variableName);
 
-			code = getter + setter;		
-		} else if (returnableType === "getter"){
-			let getterPlain = langObject.getter		
+			code = getter + setter;
+		} else if (returnableType === "getter") {
+			let getterPlain = langObject.getter
 			let getter = getterPlain.replace(/indentSize/g, indentSize).replace(/variableType/g, variableType).replace(/variableNameUp/g, variableNameUp).replace(/variableName/g, variableName);
-			
-			code = getter;			
-		} else if (returnableType === "setter"){
+
+			code = getter;
+		} else if (returnableType === "setter") {
 			let setterPlain = langObject.setter
 			let setter = setterPlain.replace(/indentSize/g, indentSize).replace(/variableType/g, variableType).replace(/variableNameUp/g, variableNameUp).replace(/variableName/g, variableName);
 
-			code = setter;			
+			code = setter;
 		}
 		generatedCode += code; //append the code for each selected line
 	}
